@@ -1,0 +1,23 @@
+[package]
+name = "tx3-dashboard"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0"
+axum = "0.7"
+chrono = { version = "0.4", features = ["serde"] }
+dotenvy = "0.15"
+hex = "0.4"
+reqwest = { version = "0.12", features = ["json", "rustls-tls"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "sqlite", "json", "macros", "chrono"] }
+tokio = { version = "1", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+utxorpc = "0.13"
+pallas = { version = "1.0.0-alpha.4", features = ["hardano", "phase2"] }
+tx3-lang = "0.15.1"
+tx3-tir = "0.15.1"
+tx3-resolver = "0.15.1"
