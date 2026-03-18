@@ -15,7 +15,7 @@ The dashboard consumes the backend API to present transaction activity, UTxOs, a
 ```
 dashboard/
 ├── backend/      # API + ingestion service
-└── frontend/     # Frontend UI (conceptual, not in repo yet)
+└── frontend/     # Frontend UI
 ```
 
 ## Architecture at a glance
