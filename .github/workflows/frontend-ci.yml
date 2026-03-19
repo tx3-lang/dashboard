@@ -1,0 +1,46 @@
+name: Frontend Check
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/frontend-ci.yml"
+      - "**"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/frontend-ci.yml"
+      - "**"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend/
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+          cache-dependency-path: ./pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run typecheck
+        run: pnpm run typecheck
+
+      - name: Run check
+        run: pnpm run check
