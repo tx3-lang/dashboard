@@ -62,7 +62,7 @@ Set `TRACKER_DB_PATH` if `tracker.db` lives outside the working directory. The N
 
 ### Empty list at `/`
 
-The dashboard renders an empty-state message that names the tracker's current cursor slot. If you're seeing it indefinitely:
+The dashboard renders "No matches yet — confirm the tracker is running." If you're seeing it indefinitely:
 
 - Confirm the tracker terminal shows `Apply` events flowing in (or, on preview, that the protocol's policy filter actually matches recent on-chain activity).
 - Confirm `tracker.db` exists in the dashboard working directory and is non-empty: `sqlite3 tracker.db 'SELECT COUNT(*) FROM matches;'`.
@@ -92,7 +92,7 @@ If the upstream chain rolls back past a slot the tracker had recorded, the track
 
 ## Tested with
 
-- `tx3-lang/tx3-lift` tracker commit: `<TBD-fill-in-task-12>`
+- `tx3-lang/tx3-lift` tracker commit: `04d0b90` (`docs: add integration test report (#8)`)
 - Node 24, pnpm 10, Rust stable.
 
 ## Deferred deployment polish

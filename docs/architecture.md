@@ -62,7 +62,7 @@ sequenceDiagram
     N-->>B: SSR HTML with matches
 ```
 
-The same Kysely instance is reused across requests in a process; better-sqlite3 opens the file in read-only mode and the dashboard never writes.
+Each server function opens a fresh Kysely instance per request and destroys it in a `finally` block. better-sqlite3 opens the file read-only with no connection-pool overhead, so the per-request lifecycle is cheap; the dashboard never writes.
 
 ## Component responsibilities
 
