@@ -21,15 +21,26 @@ const MAX_LIMIT = 200;
 
 type SelectedMatch = Pick<
 	Selectable<MatchesRow>,
-	'id' | 'tx_hash' | 'block_slot' | 'protocol_name' | 'profile_name' | 'lifted' | 'matched_at'
+	'id' | 'tx_hash' | 'block_slot' | 'protocol_name' | 'profile_name' | 'tx_name' | 'lifted' | 'matched_at'
 >;
+
+const SELECT_COLUMNS = [
+	'id',
+	'tx_hash',
+	'block_slot',
+	'protocol_name',
+	'profile_name',
+	'tx_name',
+	'lifted',
+	'matched_at',
+] as const;
 
 function toMatchRow(raw: SelectedMatch): MatchRow {
 	const lifted = parseLifted(raw.lifted);
 	return {
 		id: raw.id,
 		hash: raw.tx_hash.toString('hex'),
-		txName: lifted.txName,
+		txName: raw.tx_name,
 		protocolName: raw.protocol_name,
 		profileName: raw.profile_name,
 		blockSlot: raw.block_slot,
@@ -46,12 +57,7 @@ function toMatchRow(raw: SelectedMatch): MatchRow {
  */
 export async function listMatches(db: Kysely<DashboardDatabase>, limit: number = DEFAULT_LIMIT): Promise<MatchRow[]> {
 	const clamped = Math.max(MIN_LIMIT, Math.min(MAX_LIMIT, limit));
-	const rows = await db
-		.selectFrom('matches')
-		.select(['id', 'tx_hash', 'block_slot', 'protocol_name', 'profile_name', 'lifted', 'matched_at'])
-		.orderBy('id', 'desc')
-		.limit(clamped)
-		.execute();
+	const rows = await db.selectFrom('matches').select(SELECT_COLUMNS).orderBy('id', 'desc').limit(clamped).execute();
 	return rows.map(toMatchRow);
 }
 
@@ -67,7 +73,7 @@ export async function getMatch(db: Kysely<DashboardDatabase>, txHashHex: string)
 	const buf = Buffer.from(txHashHex, 'hex');
 	const row = await db
 		.selectFrom('matches')
-		.select(['id', 'tx_hash', 'block_slot', 'protocol_name', 'profile_name', 'lifted', 'matched_at'])
+		.select(SELECT_COLUMNS)
 		.where('tx_hash', '=', buf)
 		.limit(1)
 		.executeTakeFirst();
