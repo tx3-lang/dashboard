@@ -9,7 +9,7 @@ C4Context
 title System Context — tx3 Dashboard
 
 Person(operator, "Builder / Operator", "Runs the dashboard for their own dApp")
-System(dashboard, "tx3 Dashboard", "Monitors on-chain activity for a Tx3-described dApp")
+System(dashboard, "tx3 Dashboard", "Tracker (sidecar) + SSR app that monitor a Tx3-described dApp")
 System_Ext(utxorpc, "utxorpc Provider", "Cardano chain stream (v1beta WatchTx)")
 System_Ext(registry, "Tx3 Registry", "Source of TII files (queried at vendor time, not runtime)")
 

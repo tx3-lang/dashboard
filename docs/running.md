@@ -47,10 +47,10 @@ Visit <http://localhost:3000>. The tracker writes `dashboard/tracker.db` (plus i
 
 ## Production build
 
-For an operator-managed deployment without `vite dev`:
+For an operator-managed deployment without `vite dev`. From the repo root:
 
 ```bash
-cd frontend
+cd dashboard/frontend
 pnpm install
 pnpm build
 node .output/server/index.mjs
