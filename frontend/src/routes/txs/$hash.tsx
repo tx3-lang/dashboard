@@ -82,7 +82,12 @@ function PartiesSection({ parties }: { parties: MatchRow['parties'] }) {
 }
 
 function RawLiftedDetails({ rawLifted }: { rawLifted: string }) {
-	const pretty = JSON.stringify(JSON.parse(rawLifted), null, 2);
+	let pretty: string;
+	try {
+		pretty = JSON.stringify(JSON.parse(rawLifted), null, 2);
+	} catch {
+		pretty = rawLifted;
+	}
 
 	return (
 		<details className="rounded-lg border border-border bg-muted/20 p-4">
