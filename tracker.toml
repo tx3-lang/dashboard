@@ -1,0 +1,15 @@
+[upstream]
+endpoint  = "https://preview.utxorpc-v0.demeter.run"
+intersect = "tip"
+# api_key set via DMTR_API_KEY env
+
+[upstream.filter]
+mints_policy_id = "1d9c0b541adc300c19ddc6b9fb63c0bfe32b1508305ba65b8762dc7b"
+
+[storage]
+database_path = "./tracker.db"
+
+[[sources]]
+name      = "ticketing-2026-preview"
+tii_path  = "./protocols/buidler-fest/ticketing-2026.tii"
+profile   = "preview"
