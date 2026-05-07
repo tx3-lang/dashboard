@@ -114,7 +114,7 @@ intersect = "tip"
 # api_key set via DMTR_API_KEY env
 
 [upstream.filter]
-mints_policy_id = "1d9c0b541adc300c19ddc6b9fb63c0bfe32b1508305ba65b8762dc7b"
+mints_policy_id = "4672f28ce36e492e722392359f71e9a9442646f81d856f92d7e163f1"
 
 [storage]
 database_path = "./tracker.db"
