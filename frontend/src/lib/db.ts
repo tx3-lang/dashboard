@@ -2,27 +2,27 @@ import BetterSqlite3 from 'better-sqlite3';
 import { Kysely, SqliteDialect } from 'kysely';
 
 export interface MatchesRow {
-	id: number;
-	tx_hash: Buffer;
-	block_slot: number;
-	block_hash: Buffer;
-	source_name: string;
-	protocol_name: string;
-	tx_name: string;
-	profile_name: string;
-	lifted: string;
-	matched_at: number;
+	readonly id: number;
+	readonly tx_hash: Buffer;
+	readonly block_slot: number;
+	readonly block_hash: Buffer;
+	readonly source_name: string;
+	readonly protocol_name: string;
+	readonly tx_name: string;
+	readonly profile_name: string;
+	readonly lifted: string;
+	readonly matched_at: number;
 }
 
 export interface CursorRow {
-	id: number;
-	slot: number;
-	block_hash: Buffer;
+	readonly id: number;
+	readonly slot: number;
+	readonly block_hash: Buffer;
 }
 
 export interface SchemaVersionRow {
-	name: string;
-	applied_at: number;
+	readonly name: string;
+	readonly applied_at: number;
 }
 
 export interface DashboardDatabase {

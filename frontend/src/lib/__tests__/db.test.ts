@@ -21,6 +21,10 @@ const SCHEMA_SQL = `
 		slot INTEGER NOT NULL,
 		block_hash BLOB NOT NULL
 	);
+	CREATE TABLE _schema_versions (
+		name TEXT PRIMARY KEY,
+		applied_at INTEGER NOT NULL
+	);
 `;
 
 describe('createDb', () => {
