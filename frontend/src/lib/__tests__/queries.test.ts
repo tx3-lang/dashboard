@@ -138,4 +138,15 @@ describe('getMatch', () => {
 
 		await db.destroy();
 	});
+
+	it('rejects empty / non-hex / odd-length input', async () => {
+		const { sqlite } = seed();
+		const db = createDb({ existing: sqlite });
+
+		await expect(getMatch(db, '')).rejects.toThrow(/tx_hash hex/i);
+		await expect(getMatch(db, 'xyz')).rejects.toThrow(/tx_hash hex/i);
+		await expect(getMatch(db, 'abc')).rejects.toThrow(/tx_hash hex/i);
+
+		await db.destroy();
+	});
 });

@@ -1,6 +1,6 @@
-import type { Kysely } from 'kysely';
-import type { DashboardDatabase } from './db';
-import { bytesToHex, type LiftedParty, parseLifted } from './lifted';
+import type { Kysely, Selectable } from 'kysely';
+import type { DashboardDatabase, MatchesRow } from './db';
+import { type LiftedParty, parseLifted } from './lifted';
 
 export interface MatchRow {
 	readonly id: number;
@@ -19,33 +19,16 @@ const DEFAULT_LIMIT = 50;
 const MIN_LIMIT = 1;
 const MAX_LIMIT = 200;
 
-/**
- * Normalize a `tx_hash` BLOB column (Buffer | Uint8Array | number[]) into a
- * lowercase hex string. The driver will hand us a Buffer in practice, but
- * Kysely's typing has us go through Buffer.
- */
-function blobToHex(blob: Buffer | Uint8Array): string {
-	if (Buffer.isBuffer(blob)) {
-		return blob.toString('hex');
-	}
-	return bytesToHex(Array.from(blob));
-}
+type SelectedMatch = Pick<
+	Selectable<MatchesRow>,
+	'id' | 'tx_hash' | 'block_slot' | 'protocol_name' | 'profile_name' | 'lifted' | 'matched_at'
+>;
 
-interface RawMatch {
-	id: number;
-	tx_hash: Buffer;
-	block_slot: number;
-	protocol_name: string;
-	profile_name: string;
-	lifted: string;
-	matched_at: number;
-}
-
-function toMatchRow(raw: RawMatch): MatchRow {
+function toMatchRow(raw: SelectedMatch): MatchRow {
 	const lifted = parseLifted(raw.lifted);
 	return {
 		id: raw.id,
-		hash: blobToHex(raw.tx_hash),
+		hash: raw.tx_hash.toString('hex'),
 		txName: lifted.txName,
 		protocolName: raw.protocol_name,
 		profileName: raw.profile_name,
@@ -69,7 +52,7 @@ export async function listMatches(db: Kysely<DashboardDatabase>, limit: number =
 		.orderBy('id', 'desc')
 		.limit(clamped)
 		.execute();
-	return rows.map(row => toMatchRow(row as RawMatch));
+	return rows.map(toMatchRow);
 }
 
 /**
@@ -88,5 +71,5 @@ export async function getMatch(db: Kysely<DashboardDatabase>, txHashHex: string)
 		.where('tx_hash', '=', buf)
 		.limit(1)
 		.executeTakeFirst();
-	return row ? toMatchRow(row as RawMatch) : null;
+	return row ? toMatchRow(row) : null;
 }
