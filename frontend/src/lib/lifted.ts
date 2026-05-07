@@ -53,7 +53,7 @@ interface RawLiftedParty {
 
 interface RawLifted {
 	tx_name?: unknown;
-	parties?: Record<string, RawLiftedParty> | unknown;
+	parties?: Record<string, unknown>;
 }
 
 /**
@@ -72,10 +72,10 @@ export function parseLifted(json: string): Lifted {
 	const parties: Record<string, LiftedParty> = {};
 
 	if (data.parties && typeof data.parties === 'object') {
-		for (const [name, party] of Object.entries(data.parties as Record<string, RawLiftedParty>)) {
-			if (!party || typeof party !== 'object' || !Array.isArray(party.address)) {
-				continue;
-			}
+		for (const [name, value] of Object.entries(data.parties)) {
+			if (!value || typeof value !== 'object') continue;
+			const party = value as RawLiftedParty;
+			if (!Array.isArray(party.address)) continue;
 			parties[name] = {
 				address: bytesToHex(party.address as number[]),
 				role: typeof party.role === 'string' ? party.role : '',

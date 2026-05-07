@@ -20,8 +20,12 @@ describe('truncateHex', () => {
 		expect(truncateHex('0123456789abcdef0123456789abcdef', 6)).toBe('012345…abcdef');
 	});
 
-	it('returns the input unchanged when shorter than or equal to edge*2', () => {
+	it('returns the input unchanged when shorter than edge*2', () => {
 		expect(truncateHex('abcd', 6)).toBe('abcd');
+	});
+
+	it('returns the input unchanged when length equals edge*2 exactly', () => {
+		expect(truncateHex('abcdef012345', 6)).toBe('abcdef012345');
 	});
 });
 
