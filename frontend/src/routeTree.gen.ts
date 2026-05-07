@@ -10,17 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TxsIndexRouteImport } from './routes/txs/index'
 import { Route as TxsHashRouteImport } from './routes/txs/$hash'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TxsIndexRoute = TxsIndexRouteImport.update({
-  id: '/txs/',
-  path: '/txs/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TxsHashRoute = TxsHashRouteImport.update({
@@ -32,31 +26,27 @@ const TxsHashRoute = TxsHashRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/txs/$hash': typeof TxsHashRoute
-  '/txs/': typeof TxsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/txs/$hash': typeof TxsHashRoute
-  '/txs': typeof TxsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/txs/$hash': typeof TxsHashRoute
-  '/txs/': typeof TxsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/txs/$hash' | '/txs/'
+  fullPaths: '/' | '/txs/$hash'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/txs/$hash' | '/txs'
-  id: '__root__' | '/' | '/txs/$hash' | '/txs/'
+  to: '/' | '/txs/$hash'
+  id: '__root__' | '/' | '/txs/$hash'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   TxsHashRoute: typeof TxsHashRoute
-  TxsIndexRoute: typeof TxsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -66,13 +56,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/txs/': {
-      id: '/txs/'
-      path: '/txs'
-      fullPath: '/txs/'
-      preLoaderRoute: typeof TxsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/txs/$hash': {
@@ -88,7 +71,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   TxsHashRoute: TxsHashRoute,
-  TxsIndexRoute: TxsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
