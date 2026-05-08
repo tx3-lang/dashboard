@@ -50,7 +50,6 @@ function MatchesTable({ matches }: { matches: MatchRow[] }) {
 			<table className="w-full text-sm">
 				<thead className="border-b border-border bg-muted/30 text-left text-xs uppercase tracking-wide text-muted-foreground">
 					<tr>
-						<th className="px-4 py-2 font-medium">Protocol</th>
 						<th className="px-4 py-2 font-medium">Tx</th>
 						<th className="px-4 py-2 font-medium">Hash</th>
 						<th className="px-4 py-2 font-medium">Slot</th>
@@ -74,11 +73,6 @@ function MatchRowItem({ match }: { match: MatchRow }) {
 
 	return (
 		<tr className="hover:bg-muted/20">
-			<td className="px-4 py-3 align-middle">
-				<span className="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-					{match.protocolName}
-				</span>
-			</td>
 			<td className="px-4 py-3 align-middle">
 				<TxNamePill name={match.txName} />
 			</td>

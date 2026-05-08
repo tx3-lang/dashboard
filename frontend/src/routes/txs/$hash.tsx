@@ -63,6 +63,11 @@ function MatchDetailView() {
 	);
 }
 
+function cexplorerUrl(profile: string, hash: string): string {
+	const sub = profile === 'preview' ? 'preview.' : profile === 'preprod' ? 'preprod.' : profile === 'mainnet' ? '' : '';
+	return `https://${sub}cexplorer.io/tx/${hash}`;
+}
+
 function Header({ match }: { match: MatchRow }) {
 	const matchedAt = match.matchedAt instanceof Date ? match.matchedAt : new Date(match.matchedAt);
 	const when = matchedAt.toISOString().replace('T', ' ').slice(0, 19);
@@ -81,6 +86,14 @@ function Header({ match }: { match: MatchRow }) {
 				<Link to="/" className="text-primary hover:underline">
 					← back to list
 				</Link>
+				<a
+					href={cexplorerUrl(match.profileName, match.hash)}
+					target="_blank"
+					rel="noopener noreferrer"
+					className="text-primary hover:underline"
+				>
+					View on cexplorer ↗
+				</a>
 			</div>
 		</div>
 	);
