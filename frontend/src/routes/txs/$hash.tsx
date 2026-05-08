@@ -1,11 +1,32 @@
 import { createFileRoute, Link, notFound } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
-import { darkStyles, JsonView } from 'react-json-view-lite';
-import 'react-json-view-lite/dist/index.css';
+import { type darkStyles, JsonView } from 'react-json-view-lite';
 import PartyChip from '../../components/PartyChip';
 import TxNamePill from '../../components/TxNamePill';
 import { createDb } from '../../lib/db';
 import { getMatch, type MatchRow } from '../../lib/queries';
+
+// Theme that matches the dashboard palette (no panel bg, primary-pink chevrons,
+// emerald strings, amber numbers/booleans). Defined here rather than reusing
+// the lib's darkStyles so we don't pull in its teal-tinted CSS.
+const jsonStyles: Partial<typeof darkStyles> = {
+	container: 'font-mono text-xs leading-relaxed',
+	basicChildStyle: 'ml-4 my-px',
+	label: 'mr-1.5 font-semibold text-foreground',
+	clickableLabel: 'mr-1.5 cursor-pointer font-semibold text-foreground hover:text-primary',
+	nullValue: 'italic text-muted-foreground',
+	undefinedValue: 'italic text-muted-foreground',
+	numberValue: 'text-amber-400',
+	stringValue: 'text-emerald-400',
+	booleanValue: 'text-amber-400',
+	otherValue: 'text-muted-foreground',
+	punctuation: 'text-muted-foreground',
+	collapseIcon: 'mr-1 inline-block w-3 select-none text-primary',
+	expandIcon: 'mr-1 inline-block w-3 select-none text-primary',
+	collapsedContent: 'text-muted-foreground',
+	noQuotesForStringValues: false,
+	quotesForFieldNames: false,
+};
 
 const fetchMatch = createServerFn({ method: 'GET' })
 	.inputValidator((hash: string) => hash)
@@ -101,7 +122,7 @@ function RawLiftedDetails({ rawLifted }: { rawLifted: string }) {
 				) : (
 					<JsonView
 						data={parsed as object}
-						style={darkStyles}
+						style={jsonStyles}
 						shouldExpandNode={level => level < 1}
 						clickToExpandNode
 					/>
