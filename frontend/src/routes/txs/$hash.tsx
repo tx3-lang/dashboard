@@ -21,9 +21,9 @@ const jsonStyles: Partial<typeof darkStyles> = {
 	booleanValue: 'text-amber-400',
 	otherValue: 'text-muted-foreground',
 	punctuation: 'text-muted-foreground',
-	collapseIcon: 'mr-1 inline-block w-3 select-none text-primary',
-	expandIcon: 'mr-1 inline-block w-3 select-none text-primary',
-	collapsedContent: 'text-muted-foreground',
+	collapseIcon: "mr-1 inline-block w-3 select-none text-primary before:content-['▾']",
+	expandIcon: "mr-1 inline-block w-3 select-none text-primary before:content-['▸']",
+	collapsedContent: "text-muted-foreground before:mr-1 before:content-['…']",
 	noQuotesForStringValues: false,
 	quotesForFieldNames: false,
 };
