@@ -70,29 +70,40 @@ function MatchesTable({ matches }: { matches: MatchRow[] }) {
 function MatchRowItem({ match }: { match: MatchRow }) {
 	const matchedAt = match.matchedAt instanceof Date ? match.matchedAt : new Date(match.matchedAt);
 	const when = matchedAt.toISOString().replace('T', ' ').slice(0, 19);
+	const to = '/txs/$hash' as const;
+	const params = { hash: match.hash };
+	const cellLink = 'block px-4 py-3';
 
 	return (
-		<tr className="hover:bg-muted/20">
-			<td className="px-4 py-3 align-middle">
-				<TxNamePill name={match.txName} />
+		<tr className="group cursor-pointer hover:bg-muted/30">
+			<td className="align-middle">
+				<Link to={to} params={params} className={cellLink}>
+					<TxNamePill name={match.txName} />
+				</Link>
 			</td>
-			<td className="px-4 py-3 align-middle">
-				<Link to="/txs/$hash" params={{ hash: match.hash }} className="font-mono text-sm text-primary hover:underline">
+			<td className="align-middle">
+				<Link to={to} params={params} className={`${cellLink} font-mono text-sm text-primary group-hover:underline`}>
 					{truncateHex(match.hash)}
 				</Link>
 			</td>
-			<td className="px-4 py-3 align-middle">
-				<span className="font-mono text-sm text-muted-foreground">{match.blockSlot.toLocaleString()}</span>
+			<td className="align-middle">
+				<Link to={to} params={params} className={cellLink}>
+					<span className="font-mono text-sm text-muted-foreground">{match.blockSlot.toLocaleString()}</span>
+				</Link>
 			</td>
-			<td className="px-4 py-3 align-middle">
-				<div className="flex flex-wrap gap-2">
-					{Object.entries(match.parties).map(([name, party]) => (
-						<PartyChip key={name} name={name} address={party.address} role={party.role} />
-					))}
-				</div>
+			<td className="align-middle">
+				<Link to={to} params={params} className={cellLink}>
+					<div className="flex flex-wrap gap-2">
+						{Object.entries(match.parties).map(([name, party]) => (
+							<PartyChip key={name} name={name} address={party.address} role={party.role} />
+						))}
+					</div>
+				</Link>
 			</td>
-			<td className="px-4 py-3 align-middle">
-				<span className="font-mono text-xs text-muted-foreground">{when}</span>
+			<td className="align-middle">
+				<Link to={to} params={params} className={cellLink}>
+					<span className="font-mono text-xs text-muted-foreground">{when}</span>
+				</Link>
 			</td>
 		</tr>
 	);
