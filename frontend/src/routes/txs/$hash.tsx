@@ -1,5 +1,7 @@
 import { createFileRoute, Link, notFound } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
+import { darkStyles, JsonView } from 'react-json-view-lite';
+import 'react-json-view-lite/dist/index.css';
 import PartyChip from '../../components/PartyChip';
 import TxNamePill from '../../components/TxNamePill';
 import { createDb } from '../../lib/db';
@@ -82,17 +84,29 @@ function PartiesSection({ parties }: { parties: MatchRow['parties'] }) {
 }
 
 function RawLiftedDetails({ rawLifted }: { rawLifted: string }) {
-	let pretty: string;
+	let parsed: unknown = null;
+	let parseFailed = false;
 	try {
-		pretty = JSON.stringify(JSON.parse(rawLifted), null, 2);
+		parsed = JSON.parse(rawLifted);
 	} catch {
-		pretty = rawLifted;
+		parseFailed = true;
 	}
 
 	return (
 		<details className="rounded-lg border border-border bg-muted/20 p-4">
 			<summary className="cursor-pointer text-sm font-medium">Raw lifted JSON (debug)</summary>
-			<pre className="mt-3 overflow-x-auto font-mono text-xs">{pretty}</pre>
+			<div className="mt-3 overflow-x-auto font-mono text-xs">
+				{parseFailed || parsed === null || typeof parsed !== 'object' ? (
+					<pre>{rawLifted}</pre>
+				) : (
+					<JsonView
+						data={parsed as object}
+						style={darkStyles}
+						shouldExpandNode={level => level < 1}
+						clickToExpandNode
+					/>
+				)}
+			</div>
 		</details>
 	);
 }
