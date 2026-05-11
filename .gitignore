@@ -16,3 +16,8 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Tracker SQLite artifacts (tx3-lift sidecar)
+tracker.db
+tracker.db-wal
+tracker.db-shm

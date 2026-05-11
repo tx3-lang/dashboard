@@ -39,8 +39,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Rebuild native deps (better-sqlite3)
+        run: pnpm rebuild better-sqlite3
+
       - name: Run typecheck
         run: pnpm run typecheck
 
       - name: Run check
         run: pnpm run check
+
+      - name: Run tests
+        run: pnpm test --run

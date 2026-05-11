@@ -1,0 +1,40 @@
+[upstream]
+endpoint  = "https://cardano-mainnet.utxorpc-m1.demeter.run"
+intersect = "tip"
+# api_key   = "API_KEY"
+
+# No upstream filter — every mainnet tx is sent to the tracker; the
+# fingerprint pre-filter + structural matcher decide which ones count.
+# Costs more bandwidth than a policy-narrow filter, but maximizes signal
+# across multiple protocols and avoids missing tx variants the policy
+# filter wouldn't catch.
+# [upstream.filter]
+# mints_policy_id = ""
+
+[storage]
+database_path = "./tracker.db"
+
+[[sources]]
+name      = "indigo-mainnet"
+tii_path  = "./protocols/indigo.tii"
+profile   = "mainnet"
+
+# [[sources]]
+# name      = "vyfi-mainnet"
+# tii_path  = "./protocols/vyfi.tii"
+# profile   = "mainnet"
+
+# [[sources]]
+# name      = "bodega-mainnet"
+# tii_path  = "./protocols/bodega_market.tii"
+# profile   = "mainnet"
+
+# [[sources]]
+# name      = "fluid-aquarium-mainnet"
+# tii_path  = "./protocols/fluid-aquarium.tii"
+# profile   = "mainnet"
+
+# [[sources]]
+# name      = "strike-staking-mainnet"
+# tii_path  = "./protocols/strike-staking.tii"
+# profile   = "mainnet"
