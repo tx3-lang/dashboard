@@ -1,0 +1,68 @@
+# Docker Compose stack: tracker (writer) + dashboard (reader).
+#
+# Volume strategy:
+#   - Bind mounts (./protocols, ./deploy/tracker.toml) give the tracker read-only
+#     access to host-side config and TII files that operators may want to update
+#     without rebuilding the image.
+#   - Named volume (tracker-data) is the shared SQLite database. Using a named
+#     volume instead of a bind mount avoids UID/GID mismatches between the Rust
+#     and Node containers and lets Docker manage the lifecycle of the data.
+#
+# Startup ordering:
+#   The dashboard opens the DB with fileMustExist: true, so it must not start
+#   until the tracker has written at least one batch and created tracker.db.
+#   The healthcheck on the tracker service (test -f /data/tracker.db) gates the
+#   dashboard via depends_on: condition: service_healthy.
+
+services:
+
+  tracker:
+    image: ghcr.io/tx3-lang/tracker:latest
+    restart: unless-stopped
+    environment:
+      # API key for the Demeter utxorpc mainnet endpoint — required.
+      DMTR_API_KEY: ${DMTR_API_KEY}
+      # Log level; defaults to info so operators don't have to set it explicitly.
+      RUST_LOG: ${RUST_LOG:-info}
+    volumes:
+      # Read-only bind mounts: config files that live in this repo.
+      - ./protocols:/protocols:ro
+      - ./deploy/tracker.toml:/etc/tracker/tracker.toml:ro
+      # Named volume: SQLite database shared with the dashboard.
+      - tracker-data:/data
+    # Pass the config path as the sole argument to the tracker binary (ENTRYPOINT).
+    command: ["/etc/tracker/tracker.toml"]
+    healthcheck:
+      # The tracker creates tracker.db on its first cursor advance, which can take
+      # up to ~30 s on a cold start before the upstream delivers the first block.
+      # We wait for the file to exist before considering the service healthy.
+      test: ["CMD-SHELL", "test -f /data/tracker.db"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  dashboard:
+    image: ghcr.io/tx3-lang/dashboard:latest
+    restart: unless-stopped
+    environment:
+      # Path inside the container where the dashboard opens the SQLite database.
+      TRACKER_DB_PATH: /data/tracker.db
+      # Container always listens on 3000; the host port is configurable via PORT.
+      PORT: 3000
+    volumes:
+      # Same named volume as the tracker. NOT read-only: SQLite WAL mode requires
+      # the reader to access -shm/-wal sidecar files, which can fail on a :ro mount.
+      - tracker-data:/data
+    ports:
+      # Publish on the host port set by PORT (default 3000); container port is fixed.
+      - "${PORT:-3000}:3000"
+    depends_on:
+      tracker:
+        # Do not start the dashboard until the tracker has created tracker.db.
+        condition: service_healthy
+
+volumes:
+  # Named volume that holds tracker.db (and its WAL sidecar files).
+  # Docker manages its lifecycle; use `docker compose down -v` to remove it.
+  tracker-data:
