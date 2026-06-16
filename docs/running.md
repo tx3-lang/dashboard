@@ -8,7 +8,7 @@ You'll need:
 
 - **Rust stable** (for building and running the tracker from `tx3-lang/tx3-lift`) — only required for the from-source path.
 - **Node 24** (the version Nitro and TanStack Start are tested against in CI) — only required for the from-source path.
-- **pnpm 10** — install with `npm install -g pnpm@10` or `corepack enable` — only required for the from-source path.
+- **pnpm 11** — install with `corepack enable` (honours the `packageManager` field) or `npm install -g pnpm@11` — only required for the from-source path.
 - **A sibling clone of [`tx3-lang/tx3-lift`](https://github.com/tx3-lang/tx3-lift)** at `../tx3-lift` (relative to this repo) — only required for the from-source path. The dashboard does not embed the tracker; you run the tracker binary from that clone as a sidecar.
 - **A Demeter `utxorpc` API key.** Sign up at [demeter.run](https://demeter.run) for a free `dmtr_…` key. The recommended way to supply the key is the `DMTR_API_KEY` environment variable — you do not need to edit `tracker.toml` (the committed file keeps `api_key` commented out for this reason).
 
@@ -98,7 +98,7 @@ Set `TRACKER_DB_PATH` if `tracker.db` lives outside the working directory. The N
 
 The dashboard renders "No matches yet — confirm the tracker is running." If you're seeing it indefinitely:
 
-- Confirm the tracker terminal shows `Apply` events flowing in (or, on preview, that the protocol's policy filter actually matches recent on-chain activity).
+- Confirm the tracker terminal shows `Apply` events flowing in; on mainnet, confirmed matches for the tracked protocols typically appear within minutes.
 - Confirm `tracker.db` exists in the dashboard working directory and is non-empty: `sqlite3 tracker.db 'SELECT COUNT(*) FROM matches;'`.
 - Reload the page — the MVP does not auto-refresh.
 
@@ -127,7 +127,7 @@ If the upstream chain rolls back past a slot the tracker had recorded, the track
 ## Tested with
 
 - `tx3-lang/tx3-lift` tracker commit: `04d0b90` (`docs: add integration test report (#8)`)
-- Node 24, pnpm 10, Rust stable.
+- Node 24, pnpm 11, Rust stable.
 
 ## Deferred deployment polish
 

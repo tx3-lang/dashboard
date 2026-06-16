@@ -48,8 +48,8 @@ services:
     environment:
       # Path inside the container where the dashboard opens the SQLite database.
       TRACKER_DB_PATH: /data/tracker.db
-      # Container always listens on 3000; the host port is configurable via PORT.
-      PORT: 3000
+      # The container always listens on 3000 (set via the image's ENV PORT).
+      # The host-side port is configurable below via the PORT variable.
     volumes:
       # Same named volume as the tracker. NOT read-only: SQLite WAL mode requires
       # the reader to access -shm/-wal sidecar files, which can fail on a :ro mount.
