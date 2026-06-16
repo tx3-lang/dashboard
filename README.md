@@ -18,9 +18,21 @@ Rel(dashboard, utxorpc, "Subscribes to tx stream", "gRPC / TLS")
 Rel(operator, registry, "Pulls TII once at vendor time", "GraphQL")
 ```
 
-## Quick start
+## Run with Docker
 
-You need a clone of [`tx3-lang/tx3-lift`](https://github.com/tx3-lang/tx3-lift) as a sibling directory and a Demeter `utxorpc` API key.
+The fastest way to get the full stack running. You need Docker (with Compose v2) and a Demeter `utxorpc` API key ([free sign-up at demeter.run](https://demeter.run)).
+
+```bash
+cp .env.example .env
+# Open .env and set DMTR_API_KEY=dmtr_...
+docker compose up
+```
+
+Open <http://localhost:3000>. The tracker streams Cardano mainnet and writes `tracker.db` into a Docker volume; the dashboard reads from it. Mainnet matches for the configured protocols typically appear within a few minutes.
+
+## Quick start (from source)
+
+You need a clone of [`tx3-lang/tx3-lift`](https://github.com/tx3-lang/tx3-lift) as a sibling directory, Rust stable, Node 24, and a Demeter `utxorpc` API key.
 
 ```bash
 # Once: clone tx3-lift sibling
@@ -44,7 +56,9 @@ Open <http://localhost:3000>. See [`docs/running.md`](docs/running.md) for prere
 
 ## What the demo shows
 
-The committed configuration tracks the [`buidler-fest/ticketing-2026`](protocols/buidler-fest/ticketing-2026.tii) protocol on Cardano preview. It defines a single transaction name (`buy_ticket`) with three parties (`buyer`, `treasury`, `issuer`) and roughly 80 real on-chain matches. The matches list at `/` shows every `buy_ticket` the tracker has seen, newest first; clicking through to `/txs/<hash>` shows the parties and their addresses for that transaction.
+The Docker Compose stack (`deploy/tracker.toml`) tracks five DeFi protocols on **Cardano mainnet**: Indigo, VyFi, Bodega Market, Fluid Aquarium, and Strike Staking. Matching uses `mode = "best"`, which keeps only the highest-ranked candidate when a single transaction matches multiple TIIs. The matches list at `/` shows every matched transaction the tracker has seen, newest first; clicking through to `/txs/<hash>` shows the lifted parties and their addresses for that transaction.
+
+The `protocols/buidler-fest/` directory contains the earlier preview demo TII for reference, but the active configuration targets mainnet.
 
 ## Documentation
 
@@ -57,14 +71,23 @@ The committed configuration tracks the [`buidler-fest/ticketing-2026`](protocols
 ```
 dashboard/
 ├── README.md                     # this file
-├── tracker.toml                  # config consumed by the external tracker
+├── docker-compose.yml            # tracker + dashboard via Docker
+├── .env.example                  # DMTR_API_KEY and optional PORT/RUST_LOG
+├── tracker.toml                  # bare-metal tracker config (api_key commented out)
+├── deploy/
+│   └── tracker.toml              # Docker tracker config (mainnet, absolute paths)
 ├── docs/
 │   ├── architecture.md
 │   ├── access-patterns.md
 │   └── running.md
 ├── protocols/
+│   ├── indigo.tii
+│   ├── vyfi.tii
+│   ├── bodega_market.tii
+│   ├── fluid-aquarium.tii
+│   ├── strike-staking.tii
 │   └── buidler-fest/
-│       └── ticketing-2026.tii    # vendored TII for the demo protocol
+│       └── ticketing-2026.tii    # earlier preview demo (reference only)
 └── frontend/                     # TanStack Start SSR app
     ├── package.json
     └── src/
