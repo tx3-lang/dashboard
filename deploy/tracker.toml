@@ -1,0 +1,51 @@
+# Tracker configuration for the Docker Compose stack.
+#
+# Paths are ABSOLUTE on purpose: the tracker resolves tii_path relative to its
+# working directory, and this file is consumed inside the tracker container
+# where ./protocols and ./tracker.db do not exist. The compose mounts:
+#   - ./protocols        -> /protocols        (read-only bind mount, TII files)
+#   - ./deploy/tracker.toml -> /etc/tracker/tracker.toml (read-only bind mount)
+#   - tracker-data       -> /data             (named volume, shared with the dashboard)
+#
+# No api_key here: the key is supplied via the DMTR_API_KEY environment variable
+# (set in .env). The tracker falls back to DMTR_API_KEY when api_key is absent.
+
+[upstream]
+endpoint  = "https://cardano-mainnet.utxorpc-m1.demeter.run"
+intersect = "tip"
+
+# No upstream filter — every mainnet tx is forwarded; the fingerprint pre-filter
+# plus the structural matcher decide which ones count.
+
+[storage]
+database_path = "/data/tracker.db"
+
+# Several mainnet protocols are tracked at once, so keep only the highest-ranked
+# candidate per transaction to avoid one tx matching multiple unrelated TIIs.
+[matching]
+mode = "best"
+
+[[sources]]
+name      = "indigo-mainnet"
+tii_path  = "/protocols/indigo.tii"
+profile   = "mainnet"
+
+[[sources]]
+name      = "vyfi-mainnet"
+tii_path  = "/protocols/vyfi.tii"
+profile   = "mainnet"
+
+[[sources]]
+name      = "bodega-mainnet"
+tii_path  = "/protocols/bodega_market.tii"
+profile   = "mainnet"
+
+[[sources]]
+name      = "fluid-aquarium-mainnet"
+tii_path  = "/protocols/fluid-aquarium.tii"
+profile   = "mainnet"
+
+[[sources]]
+name      = "strike-staking-mainnet"
+tii_path  = "/protocols/strike-staking.tii"
+profile   = "mainnet"

@@ -1,0 +1,8 @@
+node_modules
+.output
+*.db
+*.db-shm
+*.db-wal
+.git
+.env
+.env.*
