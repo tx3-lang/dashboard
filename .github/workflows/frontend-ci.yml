@@ -22,15 +22,17 @@ jobs:
         working-directory: ./frontend/
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v6
         with:
-          version: 10
+          # Version comes from the packageManager field in frontend/package.json.
+          # (Action inputs don't honor working-directory, so point at the file.)
+          package_json_file: frontend/package.json
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
           cache: 'pnpm'
