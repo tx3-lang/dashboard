@@ -14,10 +14,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # package.json and resolved on the first pnpm invocation below.
 RUN corepack enable
 
-# Copy manifests first for layer caching. package.json carries the
-# pnpm.onlyBuiltDependencies allowlist that lets better-sqlite3 run its native
-# build during install; .npmrc carries repo install settings.
-COPY package.json pnpm-lock.yaml .npmrc ./
+# Copy manifests first for layer caching. pnpm-workspace.yaml carries the
+# allowBuilds allowlist that lets better-sqlite3 (and esbuild/msw) run their
+# native/post-install build scripts under pnpm 10+/11; .npmrc carries repo
+# install settings.
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 
 # Install dependencies (frozen lockfile).
 RUN pnpm install --frozen-lockfile

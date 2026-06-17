@@ -1,0 +1,11 @@
+# pnpm 10+/11 reads the build-script allowlist from this file (not from
+# package.json's pnpm.onlyBuiltDependencies). Without it, pnpm refuses to run
+# dependencies' native/post-install build scripts and fails the install with
+# ERR_PNPM_IGNORED_BUILDS — most importantly, better-sqlite3 would then ship
+# without its compiled native binding.
+allowBuilds:
+  better-sqlite3: true
+  esbuild: true
+  msw: true
+  lightningcss: true
+minimumReleaseAge: 2880
