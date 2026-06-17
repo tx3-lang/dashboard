@@ -32,13 +32,19 @@ docker compose up
 #    http://localhost:3000
 ```
 
+> **Pin an image SHA first.** Images are published to GHCR tagged with the git
+> SHA (no `latest`). `docker-compose.yml` ships with a `GIT_SHA` placeholder —
+> before the first run, replace it with a published SHA (run the "Publish … to
+> GHCR" workflows to produce images), or build the images locally and tag them
+> to match.
+
 ### How it works
 
 The `tracker` service reads `deploy/tracker.toml` and the TII files from `protocols/` (both bind-mounted read-only into the container). It writes `tracker.db` into a named Docker volume (`tracker-data`). The `dashboard` service mounts the same named volume and reads the database. The dashboard waits for the tracker's healthcheck — which checks that `/data/tracker.db` exists — before starting, so you never see a `SQLITE_CANTOPEN` crash from a race at startup.
 
 ### Docker troubleshooting
 
-- **Images not found** — the `tracker` and `dashboard` images are pulled from `ghcr.io/tx3-lang/tracker` and `ghcr.io/tx3-lang/dashboard`. Both must be published and publicly accessible on GHCR. If `docker compose pull` fails, check that the packages are public in the GitHub org.
+- **Images not found** — the images are pulled from `ghcr.io/tx3-lang/tx3-lift-tracker` and `ghcr.io/tx3-lang/dashboard-frontend`, tagged with the git SHA. `docker-compose.yml` pins a specific SHA; make sure it points at a published tag. If `docker compose pull` fails, check the SHA is published and the packages are public in the GitHub org.
 - **Named volume on a network filesystem** — SQLite WAL mode (`-wal` / `-shm` sidecar files) is not safe on NFS or other network-backed filesystems. The `tracker-data` named volume must reside on a local filesystem. Docker Desktop on macOS and Linux with the default local volume driver both satisfy this requirement.
 - **Empty list at `/`** — the tracker needs to scan the tip of mainnet and find a matching transaction before the dashboard has anything to show. Mainnet matches for the configured protocols typically appear within a few minutes. Check `docker compose logs tracker` to confirm blocks are flowing in.
 - **Stopping and data lifecycle** — `docker compose down` stops the containers but keeps the `tracker-data` volume (the database is preserved). `docker compose down -v` removes the volume and wipes all stored matches.

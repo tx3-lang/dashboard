@@ -8,6 +8,14 @@
 
 ---
 
+> **Convention update (post-implementation):** to match the txpipe GHCR pattern,
+> the published images are `ghcr.io/tx3-lang/dashboard-frontend` and
+> `ghcr.io/tx3-lang/tx3-lift-tracker` (named `<repo>-<component>`), tagged with the
+> **git SHA only** (no semver / `latest`), and the publish workflows run on
+> `workflow_dispatch`. The committed `docker-compose.yml` pins a published SHA.
+> Inline references below to `ghcr.io/tx3-lang/{tracker,dashboard}` and to
+> semver/`latest` tags predate this alignment.
+
 ## 1. Context
 
 ### 1.1 What we have

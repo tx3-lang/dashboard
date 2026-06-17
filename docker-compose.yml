@@ -17,7 +17,9 @@
 services:
 
   tracker:
-    image: ghcr.io/tx3-lang/tracker:latest
+    # Images are tagged with the git SHA by the "Publish tracker image to GHCR"
+    # workflow. Pin a published SHA here and bump it deliberately after each publish.
+    image: ghcr.io/tx3-lang/tx3-lift-tracker:GIT_SHA
     restart: unless-stopped
     environment:
       # API key for the Demeter utxorpc mainnet endpoint — required.
@@ -43,7 +45,9 @@ services:
       start_period: 30s
 
   dashboard:
-    image: ghcr.io/tx3-lang/dashboard:latest
+    # Images are tagged with the git SHA by the "Publish dashboard image to GHCR"
+    # workflow. Pin a published SHA here and bump it deliberately after each publish.
+    image: ghcr.io/tx3-lang/dashboard-frontend:GIT_SHA
     restart: unless-stopped
     environment:
       # Path inside the container where the dashboard opens the SQLite database.
